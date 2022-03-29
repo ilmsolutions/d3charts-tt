@@ -70,7 +70,7 @@ export const d3pie = ((d3, commons) => {
              .attr('stroke', 'white')
              .selectAll('path').data(d => pie(d))
              .join('path').attr('d', arc)
-             .attr('fill', d => color(d.data[xvar]));
+             .attr('fill', d => color(d.data[xvar], 'value'));
     
         svg.selectAll('g.lines')
             .data([data])

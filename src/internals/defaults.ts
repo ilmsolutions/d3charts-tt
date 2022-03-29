@@ -30,7 +30,7 @@ export const defaults = (function(d3){
     const attendance = {
         color : (v, t) => {
             
-            if(t && /holiday/i.test(t)) return 'url(#diagonalHatch)';
+            if(!t || /holiday/i.test(t)) return 'url(#diagonalHatch)';
 
             switch(v){
                 case 'late': 
@@ -55,8 +55,8 @@ export const defaults = (function(d3){
     }
 
     const behavior_rating = {
-        color: function(v, t) {
-            if(t && /holiday/i.test(t)) return 'url(#diagonalHatch)';
+        color: function(v, t = '') {
+            if(!t || /holiday/i.test(t)) return 'url(#diagonalHatch)';
 
             if(!v) return '#b4b4b4';
 
