@@ -22,7 +22,7 @@ export const d3calendar = ((d3, commons) => {
          }
          
          const draw = (elem, props) => {        
-            let {title, data, width, margin, xvar, yvars, color, valueformatter, weekday} = props;
+            let {title, data, width, margin, xvar, yvars, color, valueformatter, onclick, weekday} = props;
 
             data = data && JSON.parse(data);
             margin = margin && JSON.parse(margin);
@@ -124,7 +124,9 @@ export const d3calendar = ((d3, commons) => {
             })
             .on('touchend mouseleave', () => ttip.hidetip()) 
             ;  
-        
+            
+            onclick && cells.on('click', onclick);
+
             const month =  year.selectAll('g.month')
                 .data(d => [d]).join('g').attr('class', 'month')
                 .selectAll("g")

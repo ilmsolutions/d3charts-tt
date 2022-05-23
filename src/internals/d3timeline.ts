@@ -17,7 +17,8 @@ export const d3timeline = ((d3, commons) => {
 
          const draw = (elem, props) => {
             let {title, data, width, height, margin
-                , xvar, yvars, color : defaultColor, valueformatter, colorgen 
+                , xvar, yvars, color : defaultColor, valueformatter
+                , onclick, colorgen 
                 , tooltip: ttdisplay      
             } = props; 
   
@@ -137,6 +138,11 @@ export const d3timeline = ((d3, commons) => {
                        .attr('data-xoff', `${xoff}`)
                        .attr('transform', `translate(${xoff}, ${margin.top})`)
                        .call(callout, ttdisplay(d));
+                });
+
+                onclick && overlay.on('click', function(){
+                  let d = bisector(d3.mouse(this)[0]);
+                  onclick(d);
                 });
               
                 overlay.on('touchend mouseleave', () => tooltip.call(callout, null));
