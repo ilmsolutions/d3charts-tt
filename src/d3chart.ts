@@ -9,9 +9,10 @@ import {commons} from './internals/commons';
 import {defaults} from './internals/defaults';
 import {adddefs} from './internals/defs';
 
-const d3defaults = defaults(d3);
 
 export const d3commons = commons(d3); 
+const d3defaults = defaults(d3, d3commons);
+
 export const d3chart = (type, config?) => {
 
      let types = type.split('.');

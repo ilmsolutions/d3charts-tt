@@ -1,10 +1,10 @@
-export const defaults = (function(d3){ 
+export const defaults = (function(d3, commons){ 
+    const {horizontalscaleColorGen} = commons;
+ 
     const gradescale = {
-        colorgen: (data, field) => {
+        colorgen: (data, field, interpolatetype) => {
             var _data = data.filter(d => !/notreported/i.test(d[field])).map(d => d[field])
-            , _gen = d3.scaleOrdinal()
-            .domain(_data)
-            .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), _data.length).reverse())
+            , _gen = horizontalscaleColorGen(_data.map(d => Object.assign({name: d})), interpolatetype)
            ;
  
            return (v, t) => {

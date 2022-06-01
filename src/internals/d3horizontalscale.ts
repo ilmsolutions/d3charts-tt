@@ -1,5 +1,5 @@
 export const d3horizontalscale = ((d3, commons) => {
-   const {wrap, collisiondetection, horizontalscaleColorGen} = commons;
+   const {wrap, collisiondetection, horizontalscaleColorGen, pickBestContrast} = commons;
    let defaults = {
     jsdom: false
    };   
@@ -16,7 +16,8 @@ export const d3horizontalscale = ((d3, commons) => {
 
      const draw = (elem, props) => {
         let {title, data, width, height, margin, selected
-             , yvar, color, type, valueformatter, colorgen       
+             , yvar, color, type, valueformatter, colorgen     
+             , interpolatetype 
         } = props;
     
         let opacity = d => selected && d.name !== selected ? 0.5 : 1;
@@ -64,7 +65,7 @@ export const d3horizontalscale = ((d3, commons) => {
         let x = d3.scaleLinear([0, 1], [margin.left, width - margin.right]);
 
         color = color || (colorgen && colorgen(data, 'name')) ||  
-                       horizontalscaleColorGen(data)
+                       horizontalscaleColorGen(data, interpolatetype)
        ;
        
         svg.append("g")
@@ -88,7 +89,8 @@ export const d3horizontalscale = ((d3, commons) => {
       .data(stack.filter(d => x(d.endValue) - x(d.startValue) > 50))
       .join("text")
         .attr("opacity", "opacity")
-        .attr("fill", d => d3.lab(color(d.name)).l < 50 ? "white" : "black")
+        .attr('fill', d => pickBestContrast(color(d.name), ['#fff', '#000']))
+       // .attr("fill", d => d3.lab(color(d.name)).l < 50 ? "white" : "black")
         .attr("transform", d => `translate(${x(d.startValue) + 6}, 6)`)
         .call(text => text.append("tspan")
             .attr("y", "0.7em")

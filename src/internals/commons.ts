@@ -1,8 +1,46 @@
+
+
+const lrgb_luminance = ([r, g, b] : number[]) => {
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+const rgb_lrgb = ({ r, g, b }) => {
+    return [r / 255, g / 255, b / 255].map(rgb_lrgb1);
+}
+const rgb_lrgb1 = (v) => {
+    return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+}
+
+
 export const commons = ((d3) => {
-    const horizontalscaleColorGen = data => d3.scaleOrdinal()
+    const colorGenInterpolatorDefs = {
+        spectral: d3.interpolateSpectral 
+      , rainbow: d3.interpolateRainbow 
+    };
+
+    const contrast = (backcolor, forecolor) => {
+        const bcl = lrgb_luminance(rgb_lrgb(d3.rgb(backcolor)))
+            , fcl = lrgb_luminance(rgb_lrgb(d3.rgb(forecolor)))
+            , c = (Math.max(bcl, fcl) + 0.05) / (Math.min(bcl, fcl) + 0.05)
+            ;
+        return c;
+    };
+
+    const pickBestContrast = (backColor, forecolors) => {
+        let fmap = forecolors.map(d => {
+            let cr = contrast(backColor, d);
+            return {
+                d, cr, contrast: cr > 4.5
+            };
+        }).filter(d => d.contrast).sort((a, b) => b.cr - a.cr)
+        ;
+        return fmap && fmap[0] && fmap[0].d;
+    };
+
+         
+    const horizontalscaleColorGen = (data, interpolatetype = 'rainbow') => d3.scaleOrdinal()
                             .domain(data.map(d => d.name))
                             .range(d3.quantize(t => 
-                                d3.interpolateSpectral(t * 0.8 + 0.1), data.length).reverse()
+                                colorGenInterpolatorDefs[interpolatetype](t * 0.8 + 0.1), data.length).reverse()
         );
 
     const wrap = (text, width, lineHeight) => {
@@ -86,5 +124,5 @@ export const commons = ((d3) => {
         relax();
     
     }
-    return {wrap, collisiondetection, horizontalscaleColorGen};
+    return {wrap, collisiondetection, horizontalscaleColorGen, pickBestContrast};
 });

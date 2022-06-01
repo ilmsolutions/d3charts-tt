@@ -16,7 +16,8 @@ export const d3pie = ((d3, commons) => {
 
      const draw = (elem, props) => {
         let {title, data, width, height, margin
-            , xvar, yvar, color : defaultColor, valueformatter, colorgen       
+            , xvar, yvar, color : defaultColor, valueformatter, colorgen      
+            , interpolatetype       
         } = props;
      
         data = data && JSON.parse(data);
@@ -32,7 +33,7 @@ export const d3pie = ((d3, commons) => {
         , ch = height - margin.top - margin.bottom 
         ,   cw = width - margin.left - margin.right
         , r = Math.min(cw, ch) / 2
-        , color = (colorgen && colorgen(data, xvar)) || defaultColor
+        , color = (colorgen && colorgen(data, xvar, interpolatetype)) || defaultColor
         ; 
      
         title && svg.selectAll('g.title')                
