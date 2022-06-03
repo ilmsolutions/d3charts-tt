@@ -19,7 +19,7 @@ export const d3eventcalendar = ((d3, commons) => {
          }
 
         const draw = (elem, props) => {
-            let {title, data, startofmonth, height, width, margin, yvar, onclick} = props;
+            let {title, data, startofmonth, height, width, margin, yvar, customsymbols, onclick} = props;
             data = data && JSON.parse(data);
             margin = margin && JSON.parse(margin); 
             width = width || elem.clientWidth;
@@ -58,7 +58,7 @@ export const d3eventcalendar = ((d3, commons) => {
         }
 
         const eventCalendarLarge = (elem, props, cprops) => {
-            let {xvar} = props;
+            let {xvar, customsymbols} = props;
             let {ddata, height, width} = cprops;
             let lprops = {offsetx: 10, offsety: 0.1, offsettop: 25, offsetright: 25};
             let headerheight = 50;       
@@ -122,6 +122,12 @@ export const d3eventcalendar = ((d3, commons) => {
                         if(ddata){
                             var dd = ddata.filter(dd => dd.date.getTime() == d.date.getTime());
 
+                            customsymbols && d3.select(this)
+                            .selectAll('use')
+                            .data(dd.map(ddd => customsymbols(ddd)).filter(ddd => ddd))
+                            .join('use').attr('xlink:href', ddd => `#${ddd.symbol}`)
+                          ;
+
                             d3.select(this)
                             .classed('disabled', dd.length <= 0)
                             .selectAll('text.label')
@@ -147,7 +153,7 @@ export const d3eventcalendar = ((d3, commons) => {
         }
 
         const eventCalendarSmall = (elem, props, cprops) => {
-            let {xvar} = props;
+            let {xvar, customsymbols} = props;
             let {ddata, height, width} = cprops;
             const rows = d3.scaleBand().domain(d3.range(0, 31)).range([0, height])
                            .paddingInner(0.1);
@@ -196,14 +202,20 @@ export const d3eventcalendar = ((d3, commons) => {
                 if(ddata){
                     var dd = ddata.filter(dd => dd.date.getTime() == d.date.getTime());
 
+                    customsymbols && d3.select(this)
+                    .selectAll('use')
+                    .data(dd.map(ddd => customsymbols(ddd)).filter(ddd => ddd))
+                    .join('use').attr('xlink:href', ddd => `#${ddd.symbol}`) 
+                    ;
+
                     d3.select(this)
                     .classed('disabled', dd.length <= 0)
                     .selectAll('text.label')
-                    .data(dd.filter(ddd => ddd.label))
+                    .data(dd.filter(ddd => ddd[xvar]))
                     .join('text')
                     .attr('class', 'label')  
                     .attr('dy', cols[1].dy)                 
-                    .html(dd => dd[xvar])                    
+                    .html(ddd => ddd[xvar])                    
                     .call(wrap, cols[1].width - 2 * cols[1].ioffset)
                     .attr('transform', d => `translate(${cols[1].offset + cols[1].ioffset}, ${dholder.top})`)
                     .attr('dominant-baseline', 'hanging');
