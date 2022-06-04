@@ -126,6 +126,13 @@ export const d3eventcalendar = ((d3, commons) => {
                             .selectAll('use')
                             .data(dd.map(ddd => customsymbols(ddd)).filter(ddd => ddd))
                             .join('use').attr('xlink:href', ddd => `#${ddd.symbol}`)
+                            .filter(ddd => ddd.title)
+                            .each(function(ddd){
+                                d3.select(this)
+                                  .selectAll('title')
+                                  .data([ddd.title])
+                                  .join('title').text(dddd => dddd);
+                            })
                           ;
 
                             d3.select(this)
@@ -206,7 +213,14 @@ export const d3eventcalendar = ((d3, commons) => {
                     .selectAll('use')
                     .data(dd.map(ddd => customsymbols(ddd)).filter(ddd => ddd))
                     .join('use').attr('xlink:href', ddd => `#${ddd.symbol}`) 
-                    ;
+                    .filter(ddd => ddd.title)
+                    .each(function(ddd){
+                        d3.select(this)
+                          .selectAll('title')
+                          .data([ddd.title])
+                          .join('title').text(dddd => dddd);
+                    })
+                  ;
 
                     d3.select(this)
                     .classed('disabled', dd.length <= 0)
