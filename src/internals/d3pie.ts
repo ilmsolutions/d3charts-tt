@@ -29,7 +29,7 @@ export const d3pie = ((d3, commons) => {
             .data([{data: data, xVar: xvar}])
             .join('svg').attr('class', 'chart')
             .attr('width', width).attr('height', height)
-            .attr("viewBox", [-width / 2, -height / 2.5, width, height])        
+            .attr("viewBox", [-width / 2, -height / 2, width, height])        
         , ch = height - margin.top - margin.bottom 
         ,   cw = width - margin.left - margin.right
         , r = Math.min(cw, ch) / 2
