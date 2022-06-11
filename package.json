@@ -1,6 +1,6 @@
 {
   "name": "@ilmsolutions/d3charts-tt",
-  "version": "1.0.14",
+  "version": "1.0.17",
   "description": "shared chart library",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
@@ -22,12 +22,12 @@
   "author": "Mohammed Abdul Muqeet",
   "license": "ISC",
   "dependencies": {
+    "@ilmsolutions/d3charts-tt": "^1.0.17",
     "@types/d3": "^5.16.0",
     "d3": "^5.16.0"
   },
   "bugs": {
     "url": "https://github.com/ilmsolutions/d3charts-tt/issues"
   },
-  "homepage": "https://github.com/ilmsolutions/d3charts-tt#readme",
-  "devDependencies": {}
+  "homepage": "https://github.com/ilmsolutions/d3charts-tt#readme"
 }

@@ -127,10 +127,12 @@ export const d3calendar = ((d3, commons) => {
             
             onclick && cells.on('click', onclick);
 
-            const month =  year.selectAll('g.month')
-                .data(d => [d]).join('g').attr('class', 'month')
-                .selectAll("g")
-                .data(d => d3.utcMonths(d3.utcMonth(d.values[0][kyxvar]), d.values[d.values.length - 1][kyxvar]))
+            const month =  year
+                .selectAll("g.month")
+                .data(d => {
+                    //console.log(d);
+                    return d3.utcMonths(d3.utcMonth(d.values[0][kyxvar]), d.values[d.values.length - 1][kyxvar])
+                })
                 .join("g").attr('class', 'month');
         
             month.filter((d, i) => i).append("path")

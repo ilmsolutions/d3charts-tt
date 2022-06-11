@@ -7,11 +7,12 @@ import {d3horizontalscale} from './internals/d3horizontalscale';
 import {d3timeline} from './internals/d3timeline';
 import {commons} from './internals/commons'; 
 import {defaults} from './internals/defaults';
-import {adddefs} from './internals/defs';
+import {defs} from './internals/defs';
 
 
 export const d3commons = commons(d3); 
 const d3defaults = defaults(d3, d3commons);
+const d3defs = defs(d3);
 
 export const d3chart = (type, config?) => {
 
@@ -20,7 +21,7 @@ export const d3chart = (type, config?) => {
      let cconfig = Object.assign({}, cdefaults || {}, config || {});  
   
      //add defs 
-     cconfig.patterns && adddefs(cconfig);   
+     cconfig.patterns && d3defs.adddefs(cconfig);   
      
      switch(types[0]){
          case 'pie':

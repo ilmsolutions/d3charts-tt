@@ -78,7 +78,17 @@ export const defaults = (function(d3, commons){
                 
         }
     }
-    return  {attendance, behavior_rating, behavior_yesno, gradescale};
+
+
+    const behavior_notes = {
+        color: function(v, t) {
+
+                if(t && /holiday/i.test(t)) return 'url(#diagonalHatch)';
+                return v ? '#43ac6a' : '#b4b4b4';
+        }
+    }
+
+    return  {attendance, behavior_rating, behavior_yesno, behavior_notes, gradescale};
 });
 
 
