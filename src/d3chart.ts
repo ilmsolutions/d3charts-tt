@@ -8,17 +8,20 @@ import {d3timeline} from './internals/d3timeline';
 import {commons} from './internals/commons'; 
 import {defaults} from './internals/defaults';
 import {defs} from './internals/defs';
+import {layerdefs} from './internals/layerdefs';
 
 
 export const d3commons = commons(d3); 
 const d3defaults = defaults(d3, d3commons);
 const d3defs = defs(d3);
+const d3layerdefs = layerdefs(d3);
 
 export const d3chart = (type, config?) => {
 
      let types = type.split('.');
      let cdefaults = types[1] && d3defaults[types[1]];
-     let cconfig = Object.assign({}, cdefaults || {}, config || {});  
+     let clayerdefs = d3layerdefs && d3layerdefs[types[0]] && {layerdefs: d3layerdefs[types[0]] } || {};
+     let cconfig = Object.assign({}, cdefaults || {}, clayerdefs, config || {});  
   
      //add defs 
      cconfig.patterns && d3defs.adddefs(cconfig);   

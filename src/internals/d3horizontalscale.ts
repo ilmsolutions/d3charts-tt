@@ -17,7 +17,7 @@ export const d3horizontalscale = ((d3, commons) => {
      const draw = (elem, props) => {
         let {title, data, width, height, margin, selected
              , yvar, color, type, valueformatter, colorgen     
-             , interpolatetype 
+             , value, layers, interpolatetype 
         } = props;
     
         let opacity = d => selected && d.name !== selected ? 0.5 : 1;
@@ -30,7 +30,7 @@ export const d3horizontalscale = ((d3, commons) => {
             .join('svg').attr('class', 'chart')
             .attr('width', width).attr('height', height)               
         , ch = height - margin.top - margin.bottom 
-        ,   cw = width - margin.left - margin.right
+        , cw = width - margin.left - margin.right
         , r = Math.min(cw, ch) / 2; 
     
     
@@ -68,26 +68,30 @@ export const d3horizontalscale = ((d3, commons) => {
                        horizontalscaleColorGen(data, interpolatetype)
        ;
        
-        svg.append("g")
+       svg.selectAll('g.scale')
+        .data([stack])
+        .join('g').attr('class', 'scale')          
         .attr("stroke", "white")
         .selectAll("rect")
-        .data(stack)
+        .data(d => d)
         .join("rect")
             .attr("fill", d => color(d.name))
             .attr("x", d => x(d.startValue))
             .attr("y", margin.top)
             .attr("width", d => x(d.endValue) - x(d.startValue))
-            .attr("height", height - margin.top - margin.bottom)
+            .attr("height", ch)
             .attr("opacity", opacity)
         .append("title")
-      .text(d => `${d.name}\n${d.range}`);
+        .text(d => `${d.name}\n${d.range}`);
 
-        svg.append("g")
+        svg.selectAll('g.labels')
+        .data([stack])
+        .join('g').attr('class', 'labels')           
         .attr("font-family", "sans-serif")
         .attr("font-size", 12)
-      .selectAll("text")
-      .data(stack.filter(d => x(d.endValue) - x(d.startValue) > 50))
-      .join("text")
+        .selectAll("text")
+        .data(d => d.filter(dd => x(dd.endValue) - x(dd.startValue) > 50))
+        .join("text")
         .attr("opacity", "opacity")
         .attr('fill', d => pickBestContrast(color(d.name), ['#fff', '#000']))
        // .attr("fill", d => d3.lab(color(d.name)).l < 50 ? "white" : "black")
@@ -101,6 +105,12 @@ export const d3horizontalscale = ((d3, commons) => {
             .attr("y", "1.7em")
             .attr("fill-opacity", 0.7)
             .text(d => d.range));        
+
+        config.layerdefs && layers && Object.keys(config.layerdefs)
+        .filter(lyr => layers.indexOf(lyr) >= 0)
+        .map(lyr => {
+              config.layerdefs[lyr].call(svg, props, x);
+        });                 
      }
 
      return chart;
