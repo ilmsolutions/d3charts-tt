@@ -18,7 +18,7 @@ export const d3bar = ((d3, commons) => {
          let {title, data, width, height, margin
              , xvar, yvar, color : defaultColor, valueformatter, colorgen 
              , xscaletype, yscaletype, colorscheme
-             , interpolatetype, tooltip
+             , interpolatetype, tooltip, onclick
          } = props;
       
          data = data && JSON.parse(data);
@@ -82,6 +82,9 @@ export const d3bar = ((d3, commons) => {
                      , tooltip, colorscheme 
                  })
          ; 
+ 
+         onclick && visualize.selectAll('.series')
+                             .on('click', onclick);
          
       }
   
