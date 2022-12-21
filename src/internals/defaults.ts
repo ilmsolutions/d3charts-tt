@@ -17,7 +17,7 @@ export const defaults = (function(d3, commons){
            }
         }    
         ,   valueformatter:  (d) => {
-            var f = d3.format('.0%');
+            var f = commons.formatters.percent;
             var t = (t) => {
                 switch(true) { 
                     case /notreported/i.test(t) : return 'Not Reported'; 
@@ -44,7 +44,7 @@ export const defaults = (function(d3, commons){
             }
         }
     ,   valueformatter:  (d) => {
-        var f = d3.format('.0%');
+        var f = commons.formatters.percent;
         var t = (t) => {
             switch(true) { 
                 case /notreported/i.test(t) : return 'Not Reported'; 
@@ -55,7 +55,7 @@ export const defaults = (function(d3, commons){
     }
 
     const behavior_rating = {
-        color: function(v, t = '') {
+        color: function(v, t) {
             if(!t || /holiday/i.test(t)) return 'url(#diagonalHatch)';
 
             if(!v) return '#b4b4b4';
@@ -78,7 +78,6 @@ export const defaults = (function(d3, commons){
                 
         }
     }
-
 
     const behavior_notes = {
         color: function(v, t) {

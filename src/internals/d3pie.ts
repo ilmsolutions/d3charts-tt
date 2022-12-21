@@ -1,3 +1,5 @@
+import { commons } from "./commons";
+
 export const d3pie = ((d3, commons) => {
    const {wrap, collisiondetection} = commons;
    let defaults = {
@@ -16,14 +18,18 @@ export const d3pie = ((d3, commons) => {
 
      const draw = (elem, props) => {
         let {title, data, width, height, margin
-            , xvar, yvar, color : defaultColor, valueformatter, colorgen      
-            , interpolatetype       
+            , xvar, yvar, color : defaultColor, valueformatter, colorgen 
+            , interpolatetype, colorscheme     
         } = props;
      
         data = data && JSON.parse(data);
         margin = margin && JSON.parse(margin);
         width = width || elem.getBoundingClientRect().width;
         height = height || width;
+        colorscheme = colorscheme && colorscheme.split(',')
+        valueformatter = valueformatter ||  ((formatter) => {
+            return (d) => `${d.data.label} ${formatter(d.data.count)}`;
+        })(commons.formatters.count)
  
         let svg = d3.select(elem).selectAll('svg.chart')                   
             .data([{data: data, xVar: xvar}])
@@ -33,7 +39,13 @@ export const d3pie = ((d3, commons) => {
         , ch = height - margin.top - margin.bottom 
         ,   cw = width - margin.left - margin.right
         , r = Math.min(cw, ch) / 2
-        , color = (colorgen && colorgen(data, xvar, interpolatetype)) || defaultColor
+        , color = (colorgen && interpolatetype && ((_data, _xvar, _interpolatetype) => {
+            let _cgen = colorgen(_data, _xvar, _interpolatetype);
+            return (t) => _cgen(t, 'value');
+        })(data, xvar, interpolatetype)) || (colorscheme && data && ((_xvars, _colorscheme) => {
+            let _cgen = d3.scaleOrdinal(_xvars, _colorscheme);
+            return (t) => _cgen(t);
+        })(data.map(d => d[xvar]), colorscheme)) ||  defaultColor  
         ; 
      
         title && svg.selectAll('g.title')                
@@ -71,7 +83,8 @@ export const d3pie = ((d3, commons) => {
              .attr('stroke', 'white')
              .selectAll('path').data(d => pie(d))
              .join('path').attr('d', arc)
-             .attr('fill', d => color(d.data[xvar], 'value'));
+             .attr('fill', d => color(d.data[xvar]))
+             ;
     
         svg.selectAll('g.lines')
             .data([data])

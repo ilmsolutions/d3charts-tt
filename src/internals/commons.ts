@@ -124,5 +124,122 @@ export const commons = ((d3) => {
         relax();
     
     }
-    return {wrap, collisiondetection, horizontalscaleColorGen, pickBestContrast};
+
+    const scale = (type) => {
+        switch(true){
+           case /time/i.test(type):
+               return d3.scaleBand();
+        }
+        return null;
+    }
+
+    const tickFormat = (type, subtype) => {
+        let _formatter = d => d;
+        switch(true){
+            case /time/i.test(type):
+                switch(subtype){
+                    case 'week':
+                        _formatter = d3.utcFormat("Week %U");
+                        break;
+                    case 'year':
+                        _formatter = d3.utcFormat("Starting %b %y");
+                        break;
+                    case 'month':
+                    default:
+                        _formatter = d3.utcFormat("%b %y"); 
+                        break;
+                }
+                return d => {
+                    return _formatter(new Date(d));
+                }
+        }
+        return null;
+    }
+
+    let _interpretnonvalue = (v) => 'No Data'
+  ;  
+
+    const formatters =  {
+        percent: function (frmtr) {
+            return function (v) {
+                return !isNaN(v) ? frmtr(v).replace(/\.0*$/, '') + '%' :
+                    _interpretnonvalue(v);//100.0 to drop trailing zeroes
+            }
+        }(d3.format(',.1f'))
+        , count: function (frmtr) {
+            return function (v) {
+                return !isNaN(v) ? frmtr(v).replace(/\.0*$/, '') :
+                    _interpretnonvalue(v);
+            }
+        }(d3.format(',.1f'))
+        
+    }
+
+    let   _xposition = (mouse, container, elem, threshold) => {
+        if(container.width - (mouse.x + elem.x + elem.width) < threshold ){
+          mouse.x = mouse.x - elem.x - elem.width;
+        }
+        else
+          mouse.x += elem.x;
+
+        return  {left: mouse.x};
+    }
+    , _yposition = (mouse, container, elem, threshold) => {
+        if(container.height - (mouse.y + elem.y + elem.height) < threshold)
+        {
+          mouse.y = mouse.y - elem.y - elem.height;
+        }
+        else
+          mouse.y += elem.y; 
+
+        return {top: mouse.y};
+    };
+
+    const tooltip = () => {
+        var _t = d3.select('body')
+                   .selectAll('div.viz.tooltip')
+                   .data([0]).join('div').attr('class', 'viz tooltip')
+          , timer;
+
+          _t.selectAll('div.tooltip-inner')
+            .data([0]).join('div').attr('class', 'tooltip-inner');
+  
+        var tip =  {
+            hidetip: () => { 
+                _t.transition().duration('500').style('opacity', 0);              
+                window.clearTimeout(timer);
+                timer = window.setTimeout(function(){
+                  if(_t.node().style.opacity < 0.9)
+                     _t.classed('d-none', true);
+                }, 500)
+               return tip;
+            }
+            , showtip: () => {
+               let _c = {x: 0, y: 0, width: window.innerWidth, height: window.innerHeight} 
+               ,   _br = _t.node().getBoundingClientRect()
+               ,   _e = {x: 25, y: 25, width: _br.width, height: _br.height}
+               ,   _m = {x: d3.event.pageX, y: d3.event.pageY}
+               ,   _xpos = _xposition(_m, _c, _e, 75)
+               ,   _ypos = _yposition(_m, _c, _e, 75)
+               ;
+                _t.classed('d-none', false)
+                  .style('left', _xpos.left + 'px')
+                  .style('top',  _ypos.top + 'px')
+                _t.transition().delay(200).style('opacity', 0.9)
+               return tip;
+            } 
+            , content: (html) => {
+               _t.selectAll('div.tooltip-inner')
+                 .data([html])
+                 .join('div').attr('class', 'tooltip-inner')
+                 .html(function(d){return d;});
+               return tip;
+            }
+        };
+  
+        return tip;
+    }
+
+   
+    return {wrap, collisiondetection, horizontalscaleColorGen, pickBestContrast, scale, tickFormat, formatters, tooltip};
 });

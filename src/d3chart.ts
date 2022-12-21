@@ -5,6 +5,7 @@ import {d3calendar} from './internals/d3calendar';
 import {d3eventcalendar} from './internals/d3eventcalendar';
 import {d3horizontalscale} from './internals/d3horizontalscale';
 import {d3timeline} from './internals/d3timeline';
+import { d3bar } from './internals/d3bar';
 import {commons} from './internals/commons'; 
 import {defaults} from './internals/defaults';
 import {defs} from './internals/defs';
@@ -37,8 +38,10 @@ export const d3chart = (type, config?) => {
           return d3eventcalendar(d3, d3commons)(cconfig);
         case 'horizontalscale':
           return d3horizontalscale(d3, d3commons)(cconfig);
-          case 'timeline':
-            return d3timeline(d3, d3commons)(cconfig);          
+        case 'timeline':
+          return d3timeline(d3, d3commons)(cconfig);    
+        case 'bar':
+          return d3bar(d3,  d3commons)(cconfig);                  
      }
 
 

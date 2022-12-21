@@ -36,8 +36,7 @@ export const d3calendar = ((d3, commons) => {
 
             let height = _height(weekday);
             let countDay = _countDay(weekday);
-            let timeWeek = _timeWeek(weekday);
-            //let pathMonth = _pathMonth(weekday, null);
+            let timeWeek = _timeWeek(weekday); 
             let yVar = yvars[0];
             let tVar = yvars[1];
             let offset = d3.local();
@@ -47,7 +46,7 @@ export const d3calendar = ((d3, commons) => {
                             .join('svg')
                             .attr('class', 'chart')
                             .attr('width', width).attr('height', (margin.top + height + margin.bottom)  * data.length);
-            let ttip = valueformatter && tooltip(); 
+            let ttip = valueformatter && commons.tooltip(); 
         
         
         
@@ -71,15 +70,7 @@ export const d3calendar = ((d3, commons) => {
                                   });
         
                                   pathMonth.set(this, _pathMonth(weekday, d.values[0][kyxvar]));
-                              });
-        
-            // year.selectAll('text')
-            //     .data(d =>[d]).join('text')
-            //     .attr('x', -10)
-            //     .attr('y', 0)
-            //     .attr('font-weight', 'bold')
-            //     .attr('text-anchor', 'end')
-            //     .text(d => d.key);
+                              }); 
         
             year.selectAll('g.weekday')
                 .data([0]).join('g').attr('class', 'weekday')
@@ -124,14 +115,14 @@ export const d3calendar = ((d3, commons) => {
             })
             .on('touchend mouseleave', () => ttip.hidetip()) 
             ;  
-            
-            onclick && cells.on('click', onclick);
 
+            onclick && cells.on('click', onclick);
+        
             const month =  year
                 .selectAll("g.month")
                 .data(d => {
                     //console.log(d);
-                    return d3.utcMonths(d3.utcMonth(d.values[0][kyxvar]), d.values[d.values.length - 1][kyxvar])
+                    return d3.utcMonths(d3.utcMonth(d.values[0][kyxvar]), d.values[d.values.length - 1][kyxvar]);
                 })
                 .join("g").attr('class', 'month');
         
@@ -175,45 +166,7 @@ export const d3calendar = ((d3, commons) => {
          
              return d3.timeDay.round(date1).toISOString().split('T')[0] === 
                               d3.timeDay.round(date2).toISOString().split('T')[0];
-         }
-
-         
-         const tooltip = () => {
-            var _t = d3.select('body')
-                       .selectAll('div.viz.tooltip')
-                       .data([0]).join('div').attr('class', 'viz tooltip')
-              , timer;
-              _t.selectAll('div.tooltip-inner')
-                .data([0]).join('div').attr('class', 'tooltip-inner');
-      
-            var tip =  {
-                hidetip: () => { 
-                    _t.transition().duration('500').style('opacity', 0);              
-                    window.clearTimeout(timer);
-                    timer = window.setTimeout(function(){
-                      if(_t.node().style.opacity < 0.9)
-                         _t.classed('d-none', true);
-                    }, 500)
-                   return tip;
-                }
-                , showtip: () => {
-                    _t.classed('d-none', false)
-                      .style('left', (d3.event.pageX + 28) + 'px')
-                      .style('top', (d3.event.pageY) + 'px')
-                    _t.transition().delay(200).style('opacity', 0.9)
-                   return tip;
-                }
-                , content: (html) => {
-                   _t.selectAll('div.tooltip-inner')
-                     .data([html])
-                     .join('div').attr('class', 'tooltip-inner')
-                     .html(function(d){return d;});
-                   return tip;
-                }
-            };
-      
-            return tip;
-        }
+         } 
 
          return chart;
     }
