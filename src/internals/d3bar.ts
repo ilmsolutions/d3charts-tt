@@ -133,7 +133,9 @@ export const d3bar = ((d3, commons) => {
          .data([0])
          .join('g').attr('class', 'x axis')
          .attr('transform', `translate(${[0, height]})`)
-         .call(xaxis);  
+         .call(xaxis)
+         .selectAll('.tick text')
+         .call(wrap, xscale.bandwidth());  
  
          visualize.selectAll('g.y.axis')
          .data([0])

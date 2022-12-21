@@ -1,6 +1,6 @@
 {
   "name": "@ilmsolutions/d3charts-tt",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "shared chart library",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
