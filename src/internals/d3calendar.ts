@@ -22,7 +22,11 @@ export const d3calendar = ((d3, commons) => {
          }
          
          const draw = (elem, props) => {        
-            let {title, data, width, margin, xvar, yvars, color, valueformatter, onclick, weekday} = props;
+            let {title, data, width, margin, xvar, yvars
+                , colorscheme, zdomain
+                , color, onclick, weekday
+                , tooltip
+            } = props;
 
             data = data && JSON.parse(data);
             margin = margin && JSON.parse(margin);
@@ -33,6 +37,10 @@ export const d3calendar = ((d3, commons) => {
                     d[kyxvar] = new Date(d[xvar]);
                 });
             });
+            colorscheme = colorscheme && colorscheme.split(',');
+            zdomain = zdomain && zdomain.split(',');
+            if(colorscheme && zdomain)
+              color = color(zdomain, colorscheme);
 
             let height = _height(weekday);
             let countDay = _countDay(weekday);
@@ -46,7 +54,8 @@ export const d3calendar = ((d3, commons) => {
                             .join('svg')
                             .attr('class', 'chart')
                             .attr('width', width).attr('height', (margin.top + height + margin.bottom)  * data.length);
-            let ttip = valueformatter && commons.tooltip(); 
+
+            let ttip = tooltip && commons.tooltip(); 
         
         
         
@@ -110,8 +119,8 @@ export const d3calendar = ((d3, commons) => {
                 .attr('fill',  d => color(d[yVar], d[tVar])) 
 
 
-            valueformatter && cells.on('touchmove mousemove', d => {
-                ttip.content(valueformatter(d)).showtip();
+            tooltip && cells.on('touchmove mousemove', d => {
+                ttip.content(tooltip(d)).showtip();
             })
             .on('touchend mouseleave', () => ttip.hidetip()) 
             ;  

@@ -27,67 +27,18 @@ export const defaults = (function(d3, commons){
          }
     }
 
-    const attendance = {
-        color : (v, t) => {
-            
-            if(!t || /holiday/i.test(t)) return 'url(#diagonalHatch)';
-
-            switch(v){
-                case 'late': 
-                   return '#E99002';
-                 case 'absent':
-                    return '#F04124';
-                 case 'present':
-                     return '#43ac6a';
-                 default:
-                     return '#b4b4b4';
+    const calendar_view = {
+        color: function(zdomain, colorscheme){
+            let zscale = d3.scaleOrdinal(zdomain, colorscheme);
+            return (v, t) => {
+                if(!t || /holiday/i.test(t)) return 'url(#diagonalHatch)'; 
+                if(/noevent/i.test(v)) return '#b4b4b4';
+                return zscale(v);
             }
-        }
-    ,   valueformatter:  (d) => {
-        var f = commons.formatters.percent;
-        var t = (t) => {
-            switch(true) { 
-                case /notreported/i.test(t) : return 'Not Reported'; 
-                default: return t.toTitleCase()
-        }};
-        return `${t(d.data.type)} ${d.data.count} days (${f(d.data.percent)})`;
-     }
-    }
 
-    const behavior_rating = {
-        color: function(v, t) {
-            if(!t || /holiday/i.test(t)) return 'url(#diagonalHatch)';
-
-            if(!v) return '#b4b4b4';
-
-             var _v = parseInt(v);
-             return _v >= 0 && _v <= 1 ? '#F04124' :
-                     _v <= 3 ? '#E99002' :
-                     '#43ac6a';
         }
     }
-
-    const behavior_yesno = {
-        color: function(v, t) {
-
-                if(t && /holiday/i.test(t)) return 'url(#diagonalHatch)';
-                if(v == null) return '#b4b4b4';
-
-                var _v = parseInt(v);
-                return _v == 0 ? '#F04124' : '#43ac6a';
-                
-        }
-    }
-
-    const behavior_notes = {
-        color: function(v, t) {
-
-                if(t && /holiday/i.test(t)) return 'url(#diagonalHatch)';
-                return v ? '#43ac6a' : '#b4b4b4';
-        }
-    }
-
-    return  {attendance, behavior_rating, behavior_yesno, behavior_notes, gradescale};
+    return  {calendar_view, gradescale};
 });
 
 
