@@ -24,6 +24,8 @@ export const layerdefs = ((d3) => {
                     .join('g').attr('class', 'score-marker')
                     .attr('transform', d => `translate(${x(d)}, ${height - margin.bottom})`)
                     .each(function(d){ 
+                        let xpos = x(d);
+
                         d3.select(this)
                           .selectAll('path')
                           .data([d3.symbolTriangle])
@@ -39,9 +41,17 @@ export const layerdefs = ((d3) => {
                         d3.select(this)
                           .selectAll('text')
                           .data(d => ['Score']).join('text')
-                          .attr('transform', `translate(0, ${margin.bottom * 0.85})`)
+                          //.attr('transform', `translate(0, ${margin.bottom * 0.85})`)
                           .attr('text-anchor', 'middle')
                           .html(d => d)   
+                          .each(function(d){
+                            let bbx = this.getBBox() 
+                            ,   xofst = xpos < Math.abs(bbx.x) ? Math.abs(bbx.x) : 0 
+                            ;
+                            d3.select(this)
+                              .attr('transform', `translate(${[xofst, margin.bottom * 0.85]})`)
+                           
+                          })
                         ;                       
                     })
                   
