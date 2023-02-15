@@ -172,7 +172,14 @@ export const commons = ((d3) => {
                     _interpretnonvalue(v);
             }
         }(d3.format(',.1f'))
-        
+        , time: function(frmtr){
+          return function(v){
+            if(!v) return '-';
+            let now = d3.timeDay.floor(new Date());
+            return frmtr(d3.timeMinute.offset(now, v))
+                        .replace(/^0?([0-9]*)(?:\:00|(\:[0-9]*))\s(am|pm)/ig, `$1$2 $3`);
+          };
+        }( d3.timeFormat("%I:%M %p"))
     }
 
     let   _xposition = (mouse, container, elem, threshold) => {
@@ -240,6 +247,18 @@ export const commons = ((d3) => {
         return tip;
     }
 
+    const makeDayTimeIntervals = (step) =>{
+        let d = new Date(`01-01-2023 00:00:00`) 
+        , frmt = d3.timeFormat("%I:%M %p")
+        ,   off = dd => d3.timeMinute.count(d, dd)
+        ;
+        return d3.timeMinute.every(step).range(d3.timeDay.floor(d), d3.timeDay.offset(d, 1))
+                 .map(dd => Object.assign({}, {label: frmt(dd), value: off(dd)}));
+      }
    
-    return {wrap, collisiondetection, horizontalscaleColorGen, pickBestContrast, scale, tickFormat, formatters, tooltip};
+    const makeWeekDayIntervals = (from, to) => {
+        return d3.timeDay.every(1).range(d3.timeDay.floor(from), d3.timeDay.ceil(to));
+    }
+    return {wrap, collisiondetection, horizontalscaleColorGen, pickBestContrast
+           , scale, tickFormat, formatters, tooltip, makeDayTimeIntervals};
 });
