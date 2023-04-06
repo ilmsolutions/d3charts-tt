@@ -14,7 +14,7 @@ const rgb_lrgb1 = (v) => {
 export const commons = ((d3) => {
     const colorGenInterpolatorDefs = {
         spectral: d3.interpolateSpectral 
-      , rainbow: d3.interpolateRainbow 
+      , rainbow: d3.interpolateRainbow
     };
 
     const contrast = (backcolor, forecolor) => {
@@ -36,12 +36,18 @@ export const commons = ((d3) => {
         return fmap && fmap[0] && fmap[0].d;
     };
 
-         
-    const horizontalscaleColorGen = (data, interpolatetype = 'rainbow') => d3.scaleOrdinal()
-                            .domain(data.map(d => d.name))
-                            .range(d3.quantize(t => 
-                                colorGenInterpolatorDefs[interpolatetype](t * 0.8 + 0.1), data.length).reverse()
-        );
+   
+    const horizontalscaleColorGen = (data, interpolatetype = 'rainbow') => {
+
+        let _interpolator =  /datacolor/i.test(interpolatetype) ? 
+                          d3.interpolateDiscrete(data.map(d => d.color), data.length) :
+                          colorGenInterpolatorDefs[interpolatetype]
+        ,  _quantizer = d3.quantize(t => _interpolator(t * 0.8 + 0.1), data.length)
+
+        return d3.scaleOrdinal()
+                           .domain(data.map(d => d.name))
+                           .range(/datacolor/i.test(interpolatetype) ? _quantizer : _quantizer.reverse())
+    }
 
     const wrap = (text, width, lineHeight) => {
         lineHeight = lineHeight ? lineHeight : 1;

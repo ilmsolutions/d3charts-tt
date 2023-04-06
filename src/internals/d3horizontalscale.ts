@@ -99,28 +99,24 @@ export const d3horizontalscale = ((d3, commons) => {
                  .filter(() => { return i < list.length - 1})
                  .attr("stroke", "white")
                  .attr("stroke-dasharray", (dd) => {
-                    let _w = x(dd.endValue) - x(dd.startValue);
-                    return `${[0, _w, ch, _w]}`;
-                 })
+                     let _w = x(dd.endValue) - x(dd.startValue);
+                     return `${[0, _w, ch, _w]}`;
+                  })
                  ;
  
-             elem.selectAll("text")
+             elem.selectAll('g.label')
                  .data([d].filter(dd => x(dd.endValue) - x(dd.startValue) > 50))
+                 .join('g').attr('class', 'label')
+                 .attr('transform', 'translate(6, 6)').selectAll("text")
+                 .data(dd => [dd.name, dd.range])
                  .join("text")
                  .attr("opacity", "opacity")
-                 .attr('fill', dd => pickBestContrast(color(dd.name), ['#fff', '#000'])) 
-                 .attr("transform", "translate(6, 6)")
-                 .call(text => text.append("tspan")
-                     .attr("y", "0.7em")
-                     .attr("font-weight", "bold")
-                     .text(dd => dd.name))
-                 .call(text => text.append("tspan")
-                     .attr("x", 0)
-                     .attr("y", "1.7em")
-                     .attr("fill-opacity", 0.7)
-                     .text(dd => dd.range));   
+                 .attr('fill', dd => pickBestContrast(color(dd.name) || '#000', ['#fff', '#000'])) 
+                 .attr("transform", (dd, di) => `translate(0, ${di * 12 + 6})`)
+                 .attr("font-weight", (dd, di) => `${di == 0  ? 'bold' : 'none'}`)
+                 .text(dd => dd)
  
-               ttip && elem
+                 ttip && elem
                   .on('touchmove mousemove', mouseover)
                   .on('touchend mouseleave', mouseout)
                   .style('cursor', 'pointer')
