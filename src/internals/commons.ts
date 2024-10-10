@@ -131,6 +131,27 @@ export const commons = ((d3) => {
     
     }
 
+    
+    const rounded_rect = (x, y, w, h, r, tl, tr, bl, br) => {
+        var retval;
+        retval  = "M" + (x + r) + "," + y;
+        retval += "h" + (w - 2*r);
+        if (tr) { retval += "a" + r + "," + r + " 0 0 1 " + r + "," + r; }
+        else { retval += "h" + r; retval += "v" + r; }
+        retval += "v" + (h - 2*r);
+        if (br) { retval += "a" + r + "," + r + " 0 0 1 " + -r + "," + r; }
+        else { retval += "v" + r; retval += "h" + -r; }
+        retval += "h" + (2*r - w);
+        if (bl) { retval += "a" + r + "," + r + " 0 0 1 " + -r + "," + -r; }
+        else { retval += "h" + -r; retval += "v" + -r; }
+        retval += "v" + (2*r - h);
+        if (tl) { retval += "a" + r + "," + r + " 0 0 1 " + r + "," + -r; }
+        else { retval += "v" + -r; retval += "h" + r; }
+        retval += "z";
+        return retval;  
+    }
+
+
     const scale = (type) => {
         switch(true){
            case /time/i.test(type):
@@ -265,6 +286,6 @@ export const commons = ((d3) => {
     const makeWeekDayIntervals = (from, to) => {
         return d3.timeDay.every(1).range(d3.timeDay.floor(from), d3.timeDay.ceil(to));
     }
-    return {wrap, collisiondetection, horizontalscaleColorGen, pickBestContrast
+    return {wrap, collisiondetection, rounded_rect, horizontalscaleColorGen, pickBestContrast
            , scale, tickFormat, formatters, tooltip, makeDayTimeIntervals};
 });

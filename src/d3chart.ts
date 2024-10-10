@@ -4,6 +4,7 @@ import {d3histogram} from './internals/d3histogram';
 import {d3calendar} from './internals/d3calendar';
 import {d3eventcalendar} from './internals/d3eventcalendar';
 import {d3horizontalscale} from './internals/d3horizontalscale';
+import { d3linearguage } from './internals/d3linearguage';
 import {d3timeline} from './internals/d3timeline';
 import {d3timetable} from './internals/d3timetable';
 import { d3bar } from './internals/d3bar';
@@ -39,6 +40,8 @@ export const d3chart = (type, config?) => {
           return d3eventcalendar(d3, d3commons)(cconfig);
         case 'horizontalscale':
           return d3horizontalscale(d3, d3commons)(cconfig);
+        case 'linearguage':
+          return d3linearguage(d3, d3commons)(cconfig);          
         case 'timeline':
           return d3timeline(d3, d3commons)(cconfig);    
         case 'timetable':
