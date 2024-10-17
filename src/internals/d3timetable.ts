@@ -86,7 +86,7 @@ export const d3timetable = ((d3, commons) => {
           .data(hasscroll ? [0] : [])
           .join('g').attr('class', 'yscroll')
           .attr('transform', `translate(${[cw + margin.left, margin.top]})`)
-          .call(renderyscroller, intervalvalues, numberrows, ch, margin.right, displayed, renderer, yscroll(scrollto))
+          .call(renderyscroller, intervalvalues, numberrows, ch, margin.right, displayed, renderer, yscroll(clamptostep(+scrollto, step)))
         ;            
 
           if(!hasscroll){
@@ -439,6 +439,10 @@ export const d3timetable = ((d3, commons) => {
       ;
       return [start, end];
      } 
+
+     const clamptostep = (minutes, step) => {
+      return (Math.round(minutes/ step) * step);
+     }
 
       return chart;
   }
