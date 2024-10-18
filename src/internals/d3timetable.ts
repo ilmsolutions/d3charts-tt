@@ -47,7 +47,8 @@ export const d3timetable = ((d3, commons) => {
           let step = 15
           ,   cw = width - margin.left - margin.right
           ,   ch = height - margin.top - margin.bottom  
-          ,   wk = makeWeek(new Date(`${start} 00:00:00`))
+          ,   _start = new Date(`${start} 00:00:00`)
+          ,   wk = /day/i.test(view) ? makeDay(_start) : makeWeek(_start)
           ,   wkdays = d3.timeDay.every(1).range(...wk)
           ,   timeintervals = makeDayTimeIntervals(step)
           ,   intervalvalues = timeintervals.map(d => d.value)
@@ -279,7 +280,7 @@ export const d3timetable = ((d3, commons) => {
                                       (e[yvars[1]] >= yscaledomain[0] && e[yvars[1]] <= yscaledomain[1]))
                           .filter(e => {
                             let ed = new Date(`${e[xvar]} 00:00:00`)
-                            return ed >= xbounds[0] && ed <= xbounds[1];
+                            return ed >= xbounds[0] && (!xbounds[1] || ed <= xbounds[1]);
                           })
                    ])
                   .join('g').attr('class', `events ${type}`)
@@ -433,6 +434,9 @@ export const d3timetable = ((d3, commons) => {
      }
 
 
+     const makeDay = d => {
+       return [d, d3.timeDay.offset(d, 1)];
+     }
      const makeWeek = d => {
       let start = d3.timeWeek.floor(d)
       , end = d3.timeWeek.ceil(d3.timeDay.offset(d, 1))
