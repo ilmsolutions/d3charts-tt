@@ -39,13 +39,16 @@ export const commons = ((d3) => {
    
     const horizontalscaleColorGen = (data, interpolatetype = 'rainbow') => {
 
-        let _interpolator =  /datacolor/i.test(interpolatetype) ? 
-                          d3.interpolateDiscrete(data.map(d => d.color), data.length) :
+
+        let _data = data.length == 1 ? data.concat(data.slice())  : data //need atleast two elements for scale to work
+        , _interpolator =  /datacolor/i.test(interpolatetype) ? 
+                          d3.interpolateDiscrete(_data.map(d => d.color), _data.length) :
                           colorGenInterpolatorDefs[interpolatetype]
-        ,  _quantizer = d3.quantize(t => _interpolator(t * 0.8 + 0.1), data.length)
+        ,  _quantizer = d3.quantize(t => _interpolator(t * 0.8 + 0.1), _data.length)
+        ;
 
         return d3.scaleOrdinal()
-                           .domain(data.map(d => d.name))
+                           .domain(_data.map(d => d.name))
                            .range(/datacolor/i.test(interpolatetype) ? _quantizer : _quantizer.reverse())
     }
 
