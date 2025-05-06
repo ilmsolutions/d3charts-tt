@@ -47,6 +47,7 @@ export const d3calendar = ((d3, commons) => {
             let timeWeek = _timeWeek(weekday); 
             let yVar = yvars[0];
             let tVar = yvars[1];
+            let cVar = yvars[2];
             let offset = d3.local();
             let pathMonth = d3.local();
             let container = d3.select(elem).selectAll('svg')                   
@@ -116,7 +117,7 @@ export const d3calendar = ((d3, commons) => {
                 .attr("height", cellSize - 1)
                 .attr("x", d =>  offset.get(this)(d[kyxvar]) * cellSize + 0.5)  //timeWeek.count(d3.utcYear(d[xVar]), d[xVar])
                 .attr("y", d => countDay(d[kyxvar]) * cellSize + 0.5)  
-                .attr('fill',  d => color(d[yVar], d[tVar])) 
+                .attr('fill',  d => color(d[yVar], d[tVar], cVar && d[cVar])) 
 
 
             tooltip && cells.on('touchmove mousemove', d => {

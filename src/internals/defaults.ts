@@ -30,9 +30,10 @@ export const defaults = (function(d3, commons){
     const calendar_view = {
         color: function(zdomain, colorscheme){
             let zscale = d3.scaleOrdinal(zdomain, colorscheme);
-            return (v, t) => {
+            return (v, t, c) => {
                 if(!t || /holiday/i.test(t)) return 'url(#diagonalHatch)'; 
                 if(/noevent/i.test(v)) return '#b4b4b4';
+                if(c) return c;
                 return zscale(v);
             }
 
