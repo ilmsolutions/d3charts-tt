@@ -26,10 +26,8 @@ export const d3pie = ((d3, commons) => {
         margin = margin && JSON.parse(margin);
         width = width || elem.getBoundingClientRect().width;
         height = height || width;
-        colorscheme = colorscheme && colorscheme.split(',')
-        valueformatter = valueformatter ||  ((formatter) => {
-            return (d) => `${d.data.label} ${formatter(d.data.count)}`;
-        })(commons.formatters.count)
+        colorscheme = colorscheme && colorscheme.split(',');
+        valueformatter = valueformatter || ((d) => `${d.data.label}`);
  
         let svg = d3.select(elem).selectAll('svg.chart')                   
             .data([{data: data, xVar: xvar}])
