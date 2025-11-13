@@ -247,7 +247,7 @@ export const commons = ((d3) => {
                 window.clearTimeout(timer);
                 timer = window.setTimeout(function(){
                   if(_t.node().style.opacity < 0.9)
-                     _t.classed('d-none', true);
+                     _t.classed('opacty', 0);
                 }, 500)
                return tip;
             }
@@ -259,7 +259,7 @@ export const commons = ((d3) => {
                ,   _xpos = _xposition(_m, _c, _e, 75)
                ,   _ypos = _yposition(_m, _c, _e, 75)
                ;
-                _t.classed('d-none', false)
+                _t.style('position', 'absolute')
                   .style('left', _xpos.left + 'px')
                   .style('top',  _ypos.top + 'px')
                 _t.transition().delay(200).style('opacity', 0.9)
